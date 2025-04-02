@@ -10,7 +10,7 @@ export const MyCustomElement = () => {
           fontSize: ThemingParameters.sapFontHeader1Size,
         }}
       >
-        My custom Text Element
+        Nancy Silva Alvarez
       </span>
     </div>
   );
