@@ -1,0 +1,46 @@
+name: CI pipeline frontend
+
+on:
+  push:
+    branches:
+      - main  # El flujo se ejecutará en cada 'push' a la rama 'main'
+
+permissions:
+  contents: write  # Permisos para escribir en los contenidos del repositorio
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # El entorno donde se ejecutará el pipeline, en este caso Ubuntu
+
+    steps:
+      # Paso 1: Checkout del repositorio
+      - name: Checkout del repositorio
+        uses: actions/checkout@v3  # Usamos la acción oficial de GitHub para hacer un checkout del código
+
+      # Paso 2: Configuración de Node.js
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3  # Usamos la acción oficial para configurar Node.js
+        with:
+          node-version: '18'  # Establecemos la versión de Node.js que se usará
+
+      # Paso 3: Instalación de dependencias
+      - name: Instalar dependencias
+        run: npm install  # Ejecutamos 'npm install' para instalar las dependencias del proyecto
+
+      # Paso 4: Ejecutar Linter
+      - name: Ejecutar linter
+        run: npm run lint  # Ejecutamos 'npm run lint' para verificar la calidad del código
+        continue-on-error: true  # El flujo no fallará si el linter encuentra errores
+
+      # Paso 5: Ejecutar pruebas
+      - name: Ejecutar pruebas
+        run: npm test  # Ejecutamos 'npm test' para correr las pruebas del proyecto
+        continue-on-error: true  # Continuamos aunque las pruebas fallen (opcional, puedes cambiarlo si prefieres que falle aquí)
+
+      # Paso 6: Build de producción
+      - name: Build de producción
+        run: npm run build  # Ejecutamos el comando 'npm run build' para compilar la aplicación para producción
+
+      # Paso 7: Verificar la salida
+      - name: Verificar salida
+        run: ls -ls dist  # Verificamos el contenido del directorio 'dist' donde se guarda el build

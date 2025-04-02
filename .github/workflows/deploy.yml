@@ -1,0 +1,40 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # Se ejecuta cuando hay un push en la rama 'main'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v3  # Descarga el código del repositorio
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'  # Usa la versión 18 de Node.js
+
+      - name: Instalar dependencias
+        run: npm install  # Instala las dependencias necesarias
+
+      - name: Construir aplicación
+        run: npm run build  # Genera los archivos estáticos para producción
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v3  # Configura GitHub Pages
+
+      - name: Subir archivos a GitHub Pages
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: ./dist  # Define la carpeta con los archivos a desplegar
+
+      - name: Desplegar en GitHub Pages
+        uses: actions/deploy-pages@v2  # Despliega la aplicación en GitHub Pages
